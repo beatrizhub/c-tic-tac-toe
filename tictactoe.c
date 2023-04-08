@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 // Global variables
@@ -35,7 +36,7 @@ int main (void)
 
 void logoASCII() // Print "TXC TAC TOE" ASCII art
 {
-    printf("██████████╗  ██╗██████╗    ████████╗█████╗ ██████╗    ████████╗██████╗███████╗\n╚══██╔══╚██╗██╔██╔════╝    ╚══██╔══██╔══████╔════╝    ╚══██╔══██╔═══████╔════╝\n   ██║   ╚███╔╝██║            ██║  █████████║            ██║  ██║   ███████╗\n   ██║   ██╔██╗██║            ██║  ██╔══████║            ██║  ██║   ████╔══╝\n   ██║  ██╔╝ ██╚██████╗       ██║  ██║  ██╚██████╗       ██║  ╚██████╔███████╗\n   ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝   ╚═════╝╚══════╝\n");                                                                 
+    printf("\n██████████╗  ██╗██████╗    ████████╗█████╗ ██████╗    ████████╗██████╗███████╗\n╚══██╔══╚██╗██╔██╔════╝    ╚══██╔══██╔══████╔════╝    ╚══██╔══██╔═══████╔════╝\n   ██║   ╚███╔╝██║            ██║  █████████║            ██║  ██║   ███████╗\n   ██║   ██╔██╗██║            ██║  ██╔══████║            ██║  ██║   ████╔══╝\n   ██║  ██╔╝ ██╚██████╗       ██║  ██║  ██╚██████╗       ██║  ╚██████╔███████╗\n   ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝   ╚═════╝╚══════╝\n\n");                                                                 
 }
 
 /* This function prints the logo's art and prompts the user to start the game. */
@@ -51,15 +52,23 @@ void startGame()
 char selectSymbol()
 {
     char symbol;
-    
+    char input[100];
+
     do
     {
         printf("Select X or O: ");
-        scanf(" %c", &symbol);
-        symbol = toupper(symbol);
-    } while (symbol != 'X' && symbol != 'O'); // Repeat until a valid symbol is entered
+        fgets(input, sizeof(input), stdin); // Read in the input as a string
+        if (strlen(input) == 2 && (toupper(input[0]) == 'X' || toupper(input[0]) == 'O') && input[1] == '\n')
+        {
+            symbol = toupper(input[0]); // Extract the first character and convert to uppercase
+        }
+        else
+        {
+            printf("Invalid input. Please enter either X or O.\n");
+        }
+    } while (strlen(input) != 2 || (toupper(input[0]) != 'X' && toupper(input[0]) != 'O') || input[1] != '\n');
 
-    return symbol;// Return the chosen symbol
+    return symbol; // Return the chosen symbol
 }
 
 /* This function resets the game board by looping through   
@@ -82,7 +91,7 @@ void resetBoard()
  * the values of each space on the board ('X', 'O', or ' ' (empty)). */
 void printBoard()
 {
-    printf("  1   2   3\n"); // Print column numbers
+    printf("\n  1   2   3\n"); // Print column numbers
     printf("A %c | %c | %c \n", board[0][0], board[0][1], board[0][2]); // Print first row
     printf("  ——|———|—— \n"); // Print horizontal line
     printf("B %c | %c | %c \n", board[1][0], board[1][1], board[1][2]); // Print second row
@@ -241,17 +250,17 @@ void aiMove()
 
 void victoryASCII() // Print "VICTORY" ASCII art
 {
-    printf("██╗   ████╗██████████████╗██████╗██████╗██╗   ██╗\n██║   ██████╔════╚══██╔══██╔═══████╔══██╚██╗ ██╔╝\n██║   ██████║       ██║  ██║   ████████╔╝╚████╔╝\n╚██╗ ██╔████║       ██║  ██║   ████╔══██╗ ╚██╔╝\n ╚████╔╝██╚██████╗  ██║  ╚██████╔██║  ██║  ██║\n  ╚═══╝ ╚═╝╚═════╝  ╚═╝   ╚═════╝╚═╝  ╚═╝  ╚═╝\n");
+    printf("\n██╗   ████╗██████████████╗██████╗██████╗██╗   ██╗\n██║   ██████╔════╚══██╔══██╔═══████╔══██╚██╗ ██╔╝\n██║   ██████║       ██║  ██║   ████████╔╝╚████╔╝\n╚██╗ ██╔████║       ██║  ██║   ████╔══██╗ ╚██╔╝\n ╚████╔╝██╚██████╗  ██║  ╚██████╔██║  ██║  ██║\n  ╚═══╝ ╚═╝╚═════╝  ╚═╝   ╚═════╝╚═╝  ╚═╝  ╚═╝\n\n");
 }
 
 void defeatASCII() // Print "DEFEAT" ASCII art
 {
-    printf("██████╗█████████████████████╗█████╗████████╗\n██╔══████╔════██╔════██╔════██╔══██╚══██╔══╝\n██║  ███████╗ █████╗ █████╗ ███████║  ██║\n██║  ████╔══╝ ██╔══╝ ██╔══╝ ██╔══██║  ██║\n██████╔█████████║    █████████║  ██║  ██║\n╚═════╝╚══════╚═╝    ╚══════╚═╝  ╚═╝  ╚═╝\n");
+    printf("\n██████╗█████████████████████╗█████╗████████╗\n██╔══████╔════██╔════██╔════██╔══██╚══██╔══╝\n██║  ███████╗ █████╗ █████╗ ███████║  ██║\n██║  ████╔══╝ ██╔══╝ ██╔══╝ ██╔══██║  ██║\n██████╔█████████║    █████████║  ██║  ██║\n╚═════╝╚══════╚═╝    ╚══════╚═╝  ╚═╝  ╚═╝\n\n");
 }
 
 void tieASCII() // Print "TIE" ASCII art
 {
-    printf("█████████████████╗\n╚══██╔══████╔════╝\n   ██║  ███████╗\n   ██║  ████╔══╝\n   ██║  █████████╗\n   ╚═╝  ╚═╚══════╝\n");
+    printf("\n█████████████████╗\n╚══██╔══████╔════╝\n   ██║  ███████╗\n   ██║  ████╔══╝\n   ██║  █████████╗\n   ╚═╝  ╚═╚══════╝\n\n");
 }
 
 /* This function prints a message and ASCII art based on the winner.
@@ -282,7 +291,7 @@ void printWin(char winner)
 
 void gameoverASCII() // Print "GAME OVER" ASCII art
 {
-    printf(" ██████╗ █████╗███╗   ██████████╗     ██████╗██╗   ███████████████╗\n██╔════╝██╔══██████╗ ██████╔════╝    ██╔═══████║   ████╔════██╔══██╗\n██║  ████████████╔████╔███████╗      ██║   ████║   ███████╗ ██████╔╝\n██║   ████╔══████║╚██╔╝████╔══╝      ██║   ██╚██╗ ██╔██╔══╝ ██╔══██╗\n╚██████╔██║  ████║ ╚═╝ █████████╗    ╚██████╔╝╚████╔╝█████████║  ██║\n ╚═════╝╚═╝  ╚═╚═╝     ╚═╚══════╝     ╚═════╝  ╚═══╝ ╚══════╚═╝  ╚═╝\n");                                                                
+    printf("\n ██████╗ █████╗███╗   ██████████╗     ██████╗██╗   ███████████████╗\n██╔════╝██╔══██████╗ ██████╔════╝    ██╔═══████║   ████╔════██╔══██╗\n██║  ████████████╔████╔███████╗      ██║   ████║   ███████╗ ██████╔╝\n██║   ████╔══████║╚██╔╝████╔══╝      ██║   ██╚██╗ ██╔██╔══╝ ██╔══██╗\n╚██████╔██║  ████║ ╚═╝ █████████╗    ╚██████╔╝╚████╔╝█████████║  ██║\n ╚═════╝╚═╝  ╚═╚═╝     ╚═╚══════╝     ╚═════╝  ╚═══╝ ╚══════╚═╝  ╚═╝\n\n");                                                                
 }
 
 /* This function asks the player if they want to play another game. It prompts
