@@ -5,23 +5,23 @@
 #include <time.h>
 
 // Global variables
-int playerScore, computerScore, col;
-char board[3][3], row, player, computer;
+int playerScore, aiScore, col;
+char board[3][3], row, player, ai;
 
 // Function declarations
-void startGame(); // Print logo and prompt for enter
-char selectSymbol(); // Select X or O
+void startGame(); // Print logo and wait for enter
+char selectSymbol(); // Prompt player for symbol selection (X or O)
 void playGame(); // Loop for playing the game
 bool rematch(); // Prompt player for a rematch ('Y' or 'N')
 
-int main ()
+int main (void)
 {
     // Display menu and prompt user to press enter to start
     startGame();
 
-    // Prompt symbol selection and assign computer's symbol accordingly
+    // Prompt symbol selection and assign AI's symbol accordingly
     player = selectSymbol();
-    computer = (player == 'X') ? 'O' : 'X';
+    ai = (player == 'X') ? 'O' : 'X';
 
     // Start game loop
     do
@@ -38,16 +38,16 @@ void logoASCII() // Print "TXC TAC TOE" ASCII art
     printf("██████████╗  ██╗██████╗    ████████╗█████╗ ██████╗    ████████╗██████╗███████╗\n╚══██╔══╚██╗██╔██╔════╝    ╚══██╔══██╔══████╔════╝    ╚══██╔══██╔═══████╔════╝\n   ██║   ╚███╔╝██║            ██║  █████████║            ██║  ██║   ███████╗\n   ██║   ██╔██╗██║            ██║  ██╔══████║            ██║  ██║   ████╔══╝\n   ██║  ██╔╝ ██╚██████╗       ██║  ██║  ██╚██████╗       ██║  ╚██████╔███████╗\n   ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝  ╚═╝  ╚═╝╚═════╝       ╚═╝   ╚═════╝╚══════╝\n");                                                                 
 }
 
-/* This function prints logoASCII art and prompts the user to start the game. */
+/* This function prints the logo's art and prompts the user to start the game. */
 void startGame()
 {
     logoASCII();
     printf("Press enter to start...");
-    while (getchar() != '\n'); // waits for player to press Enter
+    while (getchar() != '\n'); // Waits for player to press enter
 }
 
-/* This function prompts the user to select X or O until a valid input is made
- * and then returns the chosen symbol.*/
+/* This function prompts the user to select X or O until a    
+ * valid input is made and then returns the chosen symbol. */
 char selectSymbol()
 {
     char symbol;
@@ -62,8 +62,8 @@ char selectSymbol()
     return symbol;// Return the chosen symbol
 }
 
-/* This function resets the game board by looping through each cell and
- * setting its value to a blank space. */
+/* This function resets the game board by looping through   
+ * each cell and setting its value to a blank space (empty). */
 void resetBoard()
 {
     // Loop through each cell on the board
@@ -76,10 +76,10 @@ void resetBoard()
     }
 }
 
-/* This function prints the current state of the tic-tac-toe board on the
- * console. It first prints the column numbers (1-3) on the top row, and then
- * each row of the board labeled A, B, and C. It uses the board array to print
- *  the values of each space on the board ('X', 'O', or ' ' (empty)). */
+/* This function prints the current state of the board on the console.
+ * It first prints the column numbers (1-3) on the top row, and then each
+ * row of the board labeled A, B, and C. It uses the board array to print
+ * the values of each space on the board ('X', 'O', or ' ' (empty)). */
 void printBoard()
 {
     printf("  1   2   3\n"); // Print column numbers
@@ -91,9 +91,9 @@ void printBoard()
     printf("\n"); // Add extra line for readability
 }
 
-/* This function counts the number of empty spaces left on the game board. It
- * iterates through each element of the board array, and decrements a counter
- * variable whenever it encounters a non-empty space. */
+/* This function counts the number of empty spaces left on the board.
+ * It iterates through each element of the board array, and decrements 
+ * a counter variable whenever it encounters a non-empty space. */
 int checkSpaces()
 {
     int spaces = 9; // 3*3 board
@@ -112,10 +112,10 @@ int checkSpaces()
     return spaces; // Return the number of remaining empty spaces on the board
 }
 
-/* This function allows the player to make a move on the board It prompts the
- * player to select a row and a column for their move, checks if the selected
- * row and column are valid and if the space is empty. If it is valid and
- * empty, updates the board with player's move */
+/* This function allows the player to make a move on the board.
+ * It prompts the player to select a row and a column for their move,
+ * checks if selected row and column are valid and if the space is empty.  
+ * If it is valid and empty, it updates the board with the player's move. */
 void playerMove()
 {
     bool validMove = false;
@@ -145,8 +145,8 @@ void playerMove()
     }
 }
 
-/* This function checks if there is a winning move on the board and return the
- * symbol of the winner ('X' or 'O'), or a space if there is no winner */
+/* This function checks if there is a winning move on the board and returns 
+ * the symbol of the winner ('X' or 'O'), or a space if there is no winner. */
 int checkWin()
 {
     // Check row win
@@ -182,10 +182,10 @@ int checkWin()
     return ' '; // No winner yet
 }
 
-/* This function allows the computer to make a move in the Tic Tac Toe game, 
- * trying to win if possible, then block the player's winning move, and if 
- * none of those options are available, making a random move on the board.*/
-void computerMove()
+/* This function allows the AI to make a move on the board, trying to win
+ * if possible, otherwise attempting to block the player's winning move
+ * if none of those options are available, a random move is generated. */
+void aiMove()
 {
     // Check for winning move
     for (int i = 0; i < 3; i++)
@@ -194,9 +194,9 @@ void computerMove()
         {
             if (board[i][j] == ' ') // Check if cell is empty
             {
-                board[i][j] = computer; // Place computer's symbol in the empty cell
+                board[i][j] = ai; // Place AI's symbol in the empty cell
 
-                if (checkWin() == computer) // Check if move results in a win
+                if (checkWin() == ai) // Check if move results in a win
                 {
                     return; // If yes, return without further processing
                 }
@@ -217,8 +217,8 @@ void computerMove()
 
                 if (checkWin() == player) // Check if move results in blocking player's win
                 {
-                    // If yes, place computer's mark in the cell and return
-                    board[i][j] = computer;
+                    // If yes, place AI's mark in the cell and return
+                    board[i][j] = ai;
                     return; 
                 }
                 board[i][j] = ' '; // Undo the move
@@ -236,7 +236,7 @@ void computerMove()
         col = rand() % 3;
     } while (board[row][col] != ' ');
         
-    board[row][col] = computer; // Place computer's mark in the random empty cell
+    board[row][col] = ai; // Place AI's mark in the random empty cell
 } 
 
 void victoryASCII() // Print "VICTORY" ASCII art
@@ -254,10 +254,10 @@ void tieASCII() // Print "TIE" ASCII art
     printf("█████████████████╗\n╚══██╔══████╔════╝\n   ██║  ███████╗\n   ██║  ████╔══╝\n   ██║  █████████╗\n   ╚═╝  ╚═╚══════╝\n");
 }
 
-/* This function prints a message and ASCII art based on the winner of the
- * game. If the player wins, it prints a victory message and increments the
- * player score, if the computer wins, it prints a defeat message and increments
- * the computer score, if the game ends in a tie, it prints a tie message. */
+/* This function prints a message and ASCII art based on the winner.
+ * If the player wins, it prints a victory message and increments the
+ * player score, if the AI wins, it prints a defeat message and increments
+ * the AI score, if there's a tie, it prints a tie message. */
 void printWin(char winner)
 {
     if(winner == player)
@@ -266,18 +266,18 @@ void printWin(char winner)
         printf("Alt: VICTORY\n");
         playerScore++;
     }
-    else if (winner == computer)
+    else if (winner == ai)
     {
         defeatASCII();
         printf("Alt: DEFEAT\n");
-        computerScore++;
+        aiScore++;
     }
     else
     {
         tieASCII();
         printf("Alt: TIE\n");
     }
-    printf("You %d x %d Computer\n", playerScore, computerScore); // Print current score
+    printf("You %d x %d AI\n", playerScore, aiScore); // Print current score
 }
 
 void gameoverASCII() // Print "GAME OVER" ASCII art
@@ -286,14 +286,14 @@ void gameoverASCII() // Print "GAME OVER" ASCII art
 }
 
 /* This function asks the player if they want to play another game. It prompts
- * the player to enter 'Y' or 'N, and continues to prompt them until they enter
- * a valid input. If the player inputs 'Y' it will return true, starting another
- * game, if the player inputs 'N' it prints a message and exit the program */
+ * the player to enter 'Y' or 'N', and continues to prompt them until they enter
+ * a valid input. If the player enters 'Y' it will return true, starting another
+ * game, if the player enters 'N' it prints a message and exits the program. */
 bool rematch()
 {
     char input;
     
-    // Loop until the user inputs Y or N
+    // Loop until player inputs Y or N
     do {
         printf("Play again? (Y/N): ");
         while (getchar() != '\n'); // clear input buffer
@@ -301,7 +301,7 @@ bool rematch()
         input = toupper(input);
     } while (input != 'Y' && input != 'N');
 
-    // If the user inputs N, display game over message and exit program
+    // If player inputs N, display game over message and exit program
     if (input == 'N')
     {
         gameoverASCII();
@@ -309,12 +309,12 @@ bool rematch()
         printf("Thanks for playing! See you next time :)\n");
     }
 
-    return input == 'Y'; // Return true if the user enters Y, false otherwise
+    return input == 'Y'; // Return true if player enters Y, false otherwise
 }
 
-/* This function starts a new game. It loops through player and computer moves
- * until a winner is found or there are no more empty spaces on the board. If
- * so, it breaks out of the loop and prints the board and outcome. */
+/* This function starts a new game. It loops through player and AI moves
+ * until a winner is found or there are no more empty spaces on the board.
+ * If so, it breaks out of the loop and prints the board and outcome. */
 void playGame()
 {
     resetBoard();
@@ -336,8 +336,8 @@ void playGame()
             break;
         }
         
-        // Let the computer make a move and check for a winner
-        computerMove();
+        // Let the AI make a move and check for a winner
+        aiMove();
         winner = checkWin();
 
         // If there is a winner or no empty spaces, break out of the loop
