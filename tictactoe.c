@@ -28,7 +28,6 @@ int main (void)
     do
     {
         playGame();
-
     } while (rematch());
 
     return 0;
@@ -47,7 +46,7 @@ void startGame()
     while (getchar() != '\n'); // Waits for player to press enter
 }
 
-/* This function prompts the user to select X or O until a    
+/* This function prompts the player to select X or O until a    
  * valid input is made and then returns the chosen symbol. */
 char selectSymbol()
 {
@@ -230,6 +229,7 @@ void aiMove()
                     board[i][j] = ai;
                     return; 
                 }
+
                 board[i][j] = ' '; // Undo the move
             }
         }
@@ -300,25 +300,35 @@ void gameoverASCII() // Print "GAME OVER" ASCII art
  * game, if the player enters 'N' it prints a message and exits the program. */
 bool rematch()
 {
-    char input;
-    
-    // Loop until player inputs Y or N
-    do {
-        printf("Play again? (Y/N): ");
-        while (getchar() != '\n'); // clear input buffer
-        input = getchar();
-        input = toupper(input);
-    } while (input != 'Y' && input != 'N');
+    char answer;
+    char input[100];
 
-    // If player inputs N, display game over message and exit program
-    if (input == 'N')
+    printf("Play again? (Y/N): ");
+    fflush(stdout);
+    fgets(input, sizeof(input), stdin); // Consume the leftover newline character
+    fgets(input, sizeof(input), stdin); // Read in the input as a string
+    do
+    {
+        if (strlen(input) == 2 && (toupper(input[0]) == 'Y' || toupper(input[0]) == 'N') && input[1] == '\n')
+        {
+            answer = toupper(input[0]); // Extract the first character and convert to uppercase
+            break;
+        }
+        else
+        {
+            printf("Invalid input. Please enter either Y or N: ");
+            fflush(stdout);
+            fgets(input, sizeof(input), stdin); // Read in the input as a string
+        }
+    } while (true);
+
+    if (answer == 'N')
     {
         gameoverASCII();
         printf("Alt: GAME OVER\n");
         printf("Thanks for playing! See you next time :)\n");
     }
-
-    return input == 'Y'; // Return true if player enters Y, false otherwise
+    return answer == 'Y'; // Return true if player enters Y, false otherwise
 }
 
 /* This function starts a new game. It loops through player and AI moves
